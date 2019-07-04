@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
@@ -11,7 +13,8 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  List<String> _dice = ['D20', 'D12', 'D10', 'D8', 'D6', 'D4'];
+  List<int> _dice = [20, 12, 10, 8, 6, 4];
+  List<int> _rolls = [];
   int _diceRolled = 1;
 
   @override
@@ -35,10 +38,18 @@ class _AppState extends State<App> {
               margin: EdgeInsets.all(10.0),
               child: _getButtons()
           ),
-          Flexible(child: ListView(
-              padding: const EdgeInsets.all(8.0),
+          Flexible(child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
+              childAspectRatio: 1.3,
               children: _getDice()
-          ))
+          )),
+          Container(
+            alignment: Alignment.bottomCenter,
+            margin: EdgeInsets.all(10.0),
+            child: Text(_rolls.toString())
+          )
         ])
     ));
   }
@@ -93,11 +104,20 @@ class _AppState extends State<App> {
   List<Widget> _getDice() {
     List<Widget> result = [];
     _dice.forEach((element) {
-      result.add(Card(child: Column(
-        children: [
-          Text(element)
-        ],
-      )));
+      result.add(
+          RaisedButton(
+            child: Text(element.toString()),
+            onPressed: (){
+              _rolls = [];
+              Random r = Random();
+              setState(() {
+                for (int i = 0; i < _diceRolled; i++) {
+                  _rolls.add(r.nextInt(element) + 1);
+                }
+              });
+            },
+          )
+      );
     });
     return result;
   }
