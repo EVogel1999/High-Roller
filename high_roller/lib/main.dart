@@ -48,7 +48,7 @@ class _AppState extends State<App> {
           Container(
             alignment: Alignment.bottomCenter,
             margin: EdgeInsets.all(10.0),
-            child: Text(_rolls.toString())
+            child: _getResult()
           )
         ])
     ));
@@ -59,6 +59,47 @@ class _AppState extends State<App> {
         brightness: Brightness.light,
         primaryColor: Colors.red,
         accentColor: Colors.redAccent
+    );
+  }
+
+  Widget _getResult() {
+    if (_rolls.length == 0) {
+      return Text("No Rolls Yet", style: TextStyle(fontSize: 24.0));
+    }
+    String rolled = "";
+    int total = 0;
+    _rolls.forEach((element){
+      rolled += element.toString() + ", ";
+      total += element;
+    });
+    rolled = rolled.substring(0, rolled.length - 2);
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 10.0),
+                child: Text(rolled, style: TextStyle(fontSize: 18.0))
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text("Total: " + total.toString(), style: TextStyle(fontSize: 24.0)),
+                  IconButton(
+                    icon: Icon(Icons.clear),
+                    color: Colors.red,
+                    onPressed: (){
+                      setState(() {
+                        _rolls = [];
+                        _diceRolled = 1;
+                      });
+                    })
+                ]),
+            ],
+          )
+        ]
     );
   }
 
@@ -106,7 +147,7 @@ class _AppState extends State<App> {
     _dice.forEach((element) {
       result.add(
           RaisedButton(
-            child: Text(element.toString()),
+            child: Text(element.toString(), style: TextStyle(fontSize: 20.0)),
             onPressed: (){
               _rolls = [];
               Random r = Random();
